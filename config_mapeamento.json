@@ -1,0 +1,13 @@
+{
+  "coluna_ano": "ano",
+  "colunas_financeiras": [
+    "pl",
+    "dotação inicial",
+    "créditos adicionais",
+    "autorizado",
+    "empenhado",
+    "pago",
+    "rp pago",
+    "rp inscrito"
+  ]
+}

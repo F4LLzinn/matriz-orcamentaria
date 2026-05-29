@@ -1,0 +1,10 @@
+# Ignorar todas as planilhas do Excel e arquivos de dados
+*.xlsx
+*.xls
+*.csv
+
+# Ignorar pastas de outputs
+outputs_processados/
+inputs_orcamento/
+inputs_regional/
+parametros/

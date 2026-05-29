@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Consolidação e Deflacionamento de Dados</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <button onclick="window.location.href='/'" style="background: none; border: none; color: var(--text-secondary); font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: var(--neu-card); padding: 6px 12px; border-radius: 10px; transition: transform 0.1s ease;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+            ⬅ Voltar ao Hub
+        </button>
+        
+        <div class="theme-switch-container" style="margin-bottom: 0;">
+            <span class="theme-label-icon">☀️</span>
+            <label class="switch">
+                <input type="checkbox" id="theme-toggle" onchange="alternarTema()">
+                <span class="slider"></span>
+            </label>
+            <span class="theme-label-icon">🌙</span>
+        </div>
+    </div>
+
+    <div class="header-area">
+        <h1>Consolidação Orçamentária</h1>
+        <p class="subtitle">Agregação de matrizes históricas e deflacionamento por índice de preços (IPCA)</p>
+    </div>
+
+    <div class="status-card">
+        <div class="status-row">
+            <span class="status-label">Bases identificadas no diretório:</span>
+            <span class="status-value">{{ total_arquivos }}</span>
+        </div>
+        <div class="status-row">
+            <span class="status-label">Matriz de referência estrutural:</span>
+            <span class="status-value" style="color: var(--accent-blue);">{{ arquivo_lider }}</span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <label style="margin-bottom: 0;">Gerenciador de Arquivos Armazenados</label>
+            {% if lista_arquivos %}
+                <button id="btn-remover-lote" onclick="removerPlanilhasEmLote()" style="background: none; border: none; color: #ef4444; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; box-shadow: var(--neu-card); padding: 4px 10px; border-radius: 8px; transition: transform 0.1s ease;">
+                    🗑️ Excluir Selecionados
+                </button>
+            {% endif %}
+        </div>
+        
+        <div style="background-color: var(--bg-main); border-radius: 20px; padding: 20px; box-shadow: var(--neu-pressed); max-height: 220px; overflow-y: auto;">
+            {% if lista_arquivos %}
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    {% for arq in lista_arquivos %}
+                        <li style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; margin-bottom: 8px; background-color: var(--bg-container); border-radius: 12px; box-shadow: var(--neu-card); font-size: 12.5px;">
+                            <div style="display: flex; align-items: center; gap: 10px; width: 85%;">
+                                <input type="checkbox" class="chk-arquivo-delete" value="{{ arq }}" style="cursor: pointer; width: 15px; height: 15px; accent-color: var(--accent-blue);">
+                                <span style="color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ arq }}">
+                                    📄 {{ arq }}
+                                </span>
+                            </div>
+                            <button onclick="removerPlanilhaLocal('{{ arq }}')" style="background: none; border: none; color: #ef4444; font-weight: bold; cursor: pointer; padding: 4px 8px; font-size: 13px; transition: transform 0.1s ease;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
+                                ✕
+                            </button>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p style="text-align: center; font-size: 12.5px; color: var(--text-secondary); padding: 10px 0;">
+                    Nenhum arquivo orçamentário armazenado no diretório atual.
+                </p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>1. Matrizes de Dados Orçamentários (Execução/Despesas)</label>
+        <div class="upload-wrapper" id="wrapper_orcamento">
+            <span id="label_orcamento" class="upload-text">
+                Clique ou arraste as planilhas de dados (.csv, .xlsx)<br>
+                <small style="color: var(--text-secondary); display: block; margin-top: 4px; font-size: 11px;">
+                    Suporta seleção múltipla para processamento em lote
+                </small>
+            </span>
+            <input type="file" id="arquivo_input" accept=".csv, .xlsx, .xls" multiple>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>2. Base Histórica IPCA (Série IPEADATA)</label>
+        <div class="upload-wrapper" id="wrapper_ipca" {% if arquivo_ipca %}style="pointer-events: none; opacity: 0.6;"{% endif %}>
+            <span id="label_ipca" class="upload-text">
+                {% if arquivo_ipca %}
+                    <span style="color: #10b981;">✔ Série histórica identificada</span>
+                {% else %}
+                    Clique para importar a série <strong>preco12_ipca12</strong><br>
+                    <small style="color: var(--text-secondary); display: block; margin-top: 4px; font-size: 11px;">
+                        Arquivo de índices inflacionários oficiais
+                    </small>
+                {% endif %}
+            </span>
+            <input type="file" id="input_ipca" accept=".csv, .xlsx, .xls" onchange="enviarArquivoIpca(this.files[0])" {% if arquivo_ipca %}disabled{% endif %}>
+        </div>
+        
+        {% if arquivo_ipca %}
+    <div id="btn_limpar_ipca_container" style="margin-top: 12px; display: block; text-align: right;">
+    {% else %}
+    <div id="btn_limpar_ipca_container" style="margin-top: 12px; display: none; text-align: right;">
+    {% endif %}
+        <button onclick="limparArquivoIpca()" class="btn-primary" style="display: inline-block; width: auto; padding: 8px 16px; font-size: 11px; border-radius: 10px; color: var(--text-secondary); box-shadow: var(--neu-card);">
+            Remover Série Ativa
+        </button>
+    </div>
+    </div>
+    
+    <div class="section-divider"></div>
+
+    <div class="form-group">
+        <label for="ano_base">Definir Ano-Base Econômico para Ajuste Inflacionário</label>
+        <input type="number" id="ano_base" value="2025" min="2000" max="2030">
+    </div>
+
+    <div class="form-group">
+        <label>Módulo de Operação Desejado</label>
+        <div class="neu-radio-group">
+            <label class="neu-radio-label">
+                <input type="radio" name="modo_execucao" value="completo" checked>
+                <span class="neu-radio-button">Rotina Completa</span>
+            </label>
+            <label class="neu-radio-label">
+                <input type="radio" name="modo_execucao" value="apenas_unificar">
+                <span class="neu-radio-button">Apenas Unificar</span>
+            </label>
+            <label class="neu-radio-label">
+                <input type="radio" name="modo_execucao" value="gerar_fator">
+                <span class="neu-radio-button">Gerar Fator Deflator</span>
+            </label>
+        </div>
+    </div>
+
+    <button id="btn-run" class="btn-primary" onclick="dispararPipeline()">Executar Processamento de Dados</button>
+
+    <div id="resultado" class="alert"></div>
+
+    <div id="bloco-downloads" class="status-card" style="display: none;">
+        <div class="status-title">Processamento Concluído com Sucesso</div>
+        <div class="download-links-container">
+            <button onclick="abrirDiretorioResultados()" class="btn-primary" style="width: 100%;">
+                Abrir Pasta de Resultados
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

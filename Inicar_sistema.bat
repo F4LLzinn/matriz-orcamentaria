@@ -1,0 +1,6 @@
+@echo off
+echo Abrindo interface no seu navegador padrão...
+start http://127.0.0.1:5000
+echo Iniciando o servidor Flask...
+python app.py
+pause

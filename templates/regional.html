@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Economia Regional - Nexus Econômico</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('tema') || 'light');
+    </script>
+</head>
+<body>
+
+<div class="container">
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <button onclick="window.location.href='/'" style="background: none; border: none; color: var(--text-secondary); font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: var(--neu-card); padding: 6px 12px; border-radius: 10px; transition: transform 0.1s ease;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+            ⬅ Voltar ao Hub
+        </button>
+        
+        <div class="theme-switch-container" style="margin-bottom: 0;">
+            <span class="theme-label-icon">☀️</span>
+            <label class="switch">
+                <input type="checkbox" id="theme-toggle" onchange="alternarTema()">
+                <span class="slider"></span>
+            </label>
+            <span class="theme-label-icon">🌙</span>
+        </div>
+    </div>
+
+    <div class="header-area">
+        <h1>Análise Econômica Regional</h1>
+        <p class="subtitle">Processamento autônomo de especialização territorial e estrutura do emprego</p>
+    </div>
+
+    <div class="form-group">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <label style="margin-bottom: 0;">Bases de Emprego Coletadas</label>
+            {% if lista_arquivos %}
+                <button id="btn-remover-lote-reg" onclick="removerPlanilhasRegionalEmLote()" style="background: none; border: none; color: #ef4444; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; box-shadow: var(--neu-card); padding: 4px 10px; border-radius: 8px;">
+                    🗑️ Excluir Selecionados
+                </button>
+            {% endif %}
+        </div>
+        
+        <div style="background-color: var(--bg-main); border-radius: 20px; padding: 20px; box-shadow: var(--neu-pressed); max-height: 150px; overflow-y: auto;">
+            {% if lista_arquivos %}
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    {% for arq in lista_arquivos %}
+                        <li style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; margin-bottom: 8px; background-color: var(--bg-container); border-radius: 12px; box-shadow: var(--neu-card); font-size: 12.5px;">
+                            <div style="display: flex; align-items: center; gap: 10px; width: 85%;">
+                                <input type="checkbox" class="chk-regional-delete" value="{{ arq }}" style="cursor: pointer; width: 15px; height: 15px; accent-color: var(--accent-blue);">
+                                <span style="color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ arq }}">
+                                    📄 {{ arq }}
+                                </span>
+                            </div>
+                            <button onclick="removerPlanilhaRegional('{{ arq }}')" style="background: none; border: none; color: #ef4444; font-weight: bold; cursor: pointer; padding: 4px 8px; font-size: 13px;">
+                                ✕
+                            </button>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p style="text-align: center; font-size: 12.5px; color: var(--text-secondary); padding: 10px 0;">
+                    Nenhuma planilha regional (.csv, .xlsx) no repositório.
+                </p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>1. Upload do Arquivo Bruto (MTE, CAGED ou IPEADATA)</label>
+        <div class="upload-wrapper" id="wrapper_regional">
+            <span id="label_regional" class="upload-text">
+                Arraste ou clique para carregar a matriz de dados<br>
+                <small style="color: var(--text-secondary); display: block; margin-top: 4px; font-size: 11px;">
+                    Formatos suportados: .csv, .xlsx
+                </small>
+            </span>
+            <input type="file" id="arquivo_regional_input" accept=".csv, .xlsx, .xls" multiple>
+        </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="form-group">
+        <label>2. Indicador Quantitativo Desejado</label>
+        <div class="neu-radio-group">
+            <label class="neu-radio-label">
+                <input type="radio" name="indicador_regional" value="ql_tradicional" checked>
+                <span class="neu-radio-button">Quociente Locacional Tradicional (QL)</span>
+            </label>
+            <label class="neu-radio-label">
+                <input type="radio" name="indicador_regional" value="ql_loo">
+                <span class="neu-radio-button">QL com Correção de Escala (Leave-One-Out)</span>
+            </label>
+            <label class="neu-radio-label">
+                <input type="radio" name="indicador_regional" value="ce">
+                <span class="neu-radio-button">Coeficiente de Especialização (CE)</span>
+            </label>
+            <label class="neu-radio-label">
+                <input type="radio" name="indicador_regional" value="shift_share">
+                <span class="neu-radio-button">Análise Estrutural-Diferencial (Shift-Share)</span>
+            </label>
+        </div>
+        <div class="form-group" style="margin-top: 20px; background-color: var(--bg-container); padding: 15px; border-radius: 14px; box-shadow: var(--neu-card);">
+        <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-bottom: 0;">
+            <input type="checkbox" id="exportar_matrizes" style="width: 18px; height: 18px; accent-color: var(--accent-blue); cursor: pointer;">
+            <span style="color: var(--text-primary); font-size: 13px; font-weight: 700; user-select: none;">
+                Exportar também matrizes estruturais intermediárias (Matriz I e II)
+            </span>
+        </label>
+    </div>
+
+    <button id="btn-run-regional" class="btn-primary" onclick="dispararPipelineRegional()">Processar Dados Regionais</button>
+
+    <div id="resultado-regional" class="alert"></div>
+
+    <div id="bloco-downloads-regional" class="status-card" style="display: none;">
+        <div class="status-title">Processamento Executado com Sucesso</div>
+        <div class="download-links-container">
+            <button onclick="abrirDiretorioResultados()" class="btn-primary" style="width: 100%;">
+                Abrir Pasta de Resultados
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
