@@ -1,11 +1,11 @@
 # 📊 Plataforma de Métodos Quantitativos Aplicados (PMQA)
 
-A **PMQA** é um ecossistema integrado e modular desenvolvido para a automação de pipelines de dados públicos, análise econométrica regional e consolidação orçamentária. O sistema unifica ferramentas analíticas sob uma arquitetura Flask estável e uma interface neumórfica minimalista.
+A **PMQA** é um ecossistema integrado e modular desenvolvido para a automação de pipelines de dados públicos, análise econométrica regional e consolidação orçamentária. O sistema unifica ferramentas analíticas sob uma arquitetura Flask estável e uma interface NeuMorhism.
 
 ---
 
-### 🚧 Status do Projeto: Em Desenvolvimento Ativo
-> **Aviso Importante:** Este sistema encontra-se em estágio de desenvolvimento (Alpha). Algumas funcionalidades de cálculo avançado estão sendo implementadas e calibradas de forma progressiva.
+### 🚧 Status do Projeto: Em Desenvolvimento Ativo (mas não sei se vou finalizar)
+> **Aviso Importante:** Este sistema encontra-se em estágio de desenvolvimento (Pré-historicamente Alpha). Algumas funcionalidades de cálculo avançado estão sendo implementadas e calibradas de forma progressiva. Com base no meu animo...
 
 ---
 
@@ -25,15 +25,18 @@ A **PMQA** é um ecossistema integrado e modular desenvolvido para a automação
 
 ## 🛑 Limitações Atuais & Erros Conhecidos
 
-* ⚠️ **Módulo Shift-Share (Análise Estrutural-Diferencial):** A opção está visível no painel regional, mas **ainda não está funcional**. O algoritmo completo exige o processamento de microdados emparelhados de dois períodos temporais distintos e está em fase de modelagem lógica. Selecionar esta opção resultará em uma interrupção intencional do motor traseiro.
+* ⚠️ **Módulo Shift-Share (Análise Estrutural-Diferencial):** A opção está visível no painel regional, mas **ainda não está funcional**. O algoritmo completo exige o processamento de microdados emparelhados de dois períodos temporais distintos e está em fase de modelagem lógica. Selecionar esta opção resultará em uma interrupção intencional do back-end.
 
 ---
 
 ## 🗺️ Próximos Passos & Roadmap de Atualizações
 
 - [ ] **Implementação do Shift-Share:** Desenvolvimento do pipeline de dados bifásico para cálculo dos efeitos nacional, estrutural e locacional.
-- [ ] **Repaginada Completa da UI/UX:** Atualização estrutural dos componentes neumórficos, otimização do fluxo de navegação entre módulos e refinamento do feedback visual de processamento para melhorar drasticamente a experiência do usuário.
+- [ ] **Repaginada Completa da UI/UX:** Atualização estrutural e refinamento no estilo da interface, otimização do fluxo de navegação entre módulos e refinamento do feedback visual de processamento para melhorar drasticamente a experiência do usuário.
 - [ ] **Expansão de Indicadores:** Inclusão de rotinas automáticas para o Coeficiente de Reestruturação (Cr) e Coeficiente de Diversificação (Cd).
+- [ ] **Adição de Opção de Visualização Dinâmica:** Incluir a opção de gerar gráficos interativos prontos para uma apresentação visual ou inclusão em um artigo.
+- [ ] **Melhor Organização das Saídas de Resultados:** Projetar um ambiente mais intuitivo para salvamento dos resultados gerados.
+- [ ] **Compilar em um unico APP:** Ao final talvez eu compile o código em um app executavel para nao rodar em um terminal e uma aba de navegador, ou talvez upe o codigo em uma host e deixe ele acessivel de forma online. Ainda vou pensar como será a estrutura final do código.
 
 ---
 
