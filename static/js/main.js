@@ -1,13 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- GERENCIAMENTO SEGURO E PRECOCE DE TEMA ---
     const temaSalvo = localStorage.getItem('tema') || 'light';
     document.documentElement.setAttribute('data-theme', temaSalvo);
     
     const toggle = document.getElementById('theme-toggle');
     if (toggle) {
         toggle.checked = (temaSalvo === 'dark');
-        
-        // Ouvinte moderno direto no elemento (mata o problema de escopo do HTML)
         toggle.addEventListener('change', (e) => {
             const novoTema = e.target.checked ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', novoTema);
@@ -15,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- ESCUTAS DO MÓDULO: ORÇAMENTO ---
     const fileInputOrcamento = document.getElementById('arquivo_input');
     if (fileInputOrcamento) {
         fileInputOrcamento.addEventListener('change', () => {
@@ -25,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- ESCUTAS DO MÓDULO: ECONOMIA REGIONAL ---
     const fileInputRegional = document.getElementById('arquivo_regional_input');
     if (fileInputRegional) {
         fileInputRegional.addEventListener('change', () => {
@@ -36,7 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Garante compatibilidade caso o HTML chame a função antiga antes do script carregar todo
 window.alternarTema = function() {
     const checkbox = document.getElementById('theme-toggle');
     if (!checkbox) return;
@@ -45,36 +39,19 @@ window.alternarTema = function() {
     localStorage.setItem('tema', novoTema);
 };
 
-// ==============================================================================
-// 📊 SCRIPT DE CONTROLE: MÓDULO ORÇAMENTÁRIO (SIGA BRASIL)
-// ==============================================================================
-
 function removerPlanilhaLocal(nomeArquivo) {
     const alertBox = document.getElementById('resultado');
     alertBox.style.display = 'none';
 
-    if (!confirm(`Deseja remover permanentemente o arquivo "${nomeArquivo}" do seu repositório de dados?`)) {
-        return;
-    }
+    if (!confirm(`Deseja remover permanentemente o arquivo "${nomeArquivo}"?`)) return;
 
     fetch(`/limpar/orcamento/${encodeURIComponent(nomeArquivo)}`, { method: 'POST' })
     .then(res => res.json())
     .then(data => {
-        if (data.status === 'sucesso') {
-            alertBox.className = 'alert alert-success';
-            alertBox.innerText = data.mensagem;
-            alertBox.style.display = 'block';
-            setTimeout(() => { window.location.reload(); }, 1200);
-        } else {
-            alertBox.className = 'alert alert-error';
-            alertBox.innerText = data.mensagem;
-            alertBox.style.display = 'block';
-        }
-    })
-    .catch(() => {
-        alertBox.className = 'alert alert-error';
-        alertBox.innerText = 'Erro ao processar a solicitação de exclusão do arquivo.';
+        alertBox.className = data.status === 'sucesso' ? 'alert alert-success' : 'alert alert-error';
+        alertBox.innerText = data.mensagem;
         alertBox.style.display = 'block';
+        if (data.status === 'sucesso') setTimeout(() => { window.location.reload(); }, 1200);
     });
 }
 
@@ -84,21 +61,18 @@ function removerPlanilhasEmLote() {
     alertBox.style.display = 'none';
 
     if (checkboxes.length === 0) {
-        alert('Por favor, selecione pelo menos uma planilha para exclusão.');
+        alert('Selecione pelo menos uma planilha para exclusão.');
         return;
     }
 
-    if (!confirm(`Deseja remover permanentemente os ${checkboxes.length} arquivos selecionados do seu repositório de dados?`)) {
-        return;
-    }
+    if (!confirm(`Deseja remover os ${checkboxes.length} arquivos selecionados?`)) return;
 
     const btnLote = document.getElementById('btn-remover-lote');
     btnLote.disabled = true;
     btnLote.innerText = "Excluindo...";
 
     const enviosExclusao = Array.from(checkboxes).map(chk => {
-        const nomeArquivo = chk.value;
-        return fetch(`/limpar/orcamento/${encodeURIComponent(nomeArquivo)}`, { method: 'POST' })
+        return fetch(`/limpar/orcamento/${encodeURIComponent(chk.value)}`, { method: 'POST' })
             .then(res => res.json())
             .catch(() => ({ status: 'erro' }));
     });
@@ -107,12 +81,12 @@ function removerPlanilhasEmLote() {
         const erros = resultados.filter(r => r.status === 'erro');
         if (erros.length === 0) {
             alertBox.className = 'alert alert-success';
-            alertBox.innerText = `${checkboxes.length} planilha(s) removida(s) com sucesso em lote.`;
+            alertBox.innerText = 'Planilhas removidas com sucesso.';
             alertBox.style.display = 'block';
-            setTimeout(() => { window.location.reload(); }, 1500);
+            setTimeout(() => { window.location.reload(); }, 1200);
         } else {
             alertBox.className = 'alert alert-error';
-            alertBox.innerText = 'Ocorreu um erro ao tentar remover algumas das planilhas selecionadas.';
+            alertBox.innerText = 'Erro ao remover algumas planilhas.';
             alertBox.style.display = 'block';
             btnLote.disabled = false;
             btnLote.innerText = "🗑️ Excluir Selecionados";
@@ -125,7 +99,7 @@ function enviarLoteOrcamento(arquivos) {
     const txtLabel = document.getElementById('label_orcamento');
     const alertBox = document.getElementById('resultado');
     alertBox.style.display = 'none';
-    txtLabel.innerText = `Processando upload de ${arquivos.length} arquivo(s)...`;
+    txtLabel.innerText = `Enviando ${arquivos.length} arquivo(s)...`;
 
     const envios = Array.from(arquivos).map(arquivo => {
         const formData = new FormData();
@@ -139,12 +113,12 @@ function enviarLoteOrcamento(arquivos) {
         const erros = resultados.filter(r => r.status === 'erro');
         if (erros.length === 0) {
             alertBox.className = 'alert alert-success';
-            alertBox.innerText = `${arquivos.length} planilha(s) carregada(s) com sucesso.`;
+            alertBox.innerText = 'Upload concluído.';
             alertBox.style.display = 'block';
-            setTimeout(() => { window.location.reload(); }, 1500);
+            setTimeout(() => { window.location.reload(); }, 1200);
         } else {
             alertBox.className = 'alert alert-error';
-            alertBox.innerText = 'Falha no processamento das planilhas. Verifique o formato dos arquivos.';
+            alertBox.innerText = 'Erro no upload operacional.';
             alertBox.style.display = 'block';
         }
     }).finally(() => {
@@ -160,7 +134,7 @@ function enviarArquivoIpca(arquivo) {
     const alertBox = document.getElementById('resultado');
     
     alertBox.style.display = 'none';
-    txtLabel.innerText = "Carregando série histórica de preços...";
+    txtLabel.innerText = "Carregando série histórica...";
 
     const formData = new FormData();
     formData.append('arquivo', arquivo);
@@ -172,24 +146,16 @@ function enviarArquivoIpca(arquivo) {
             alertBox.className = 'alert alert-success';
             alertBox.innerText = data.mensagem;
             alertBox.style.display = 'block';
-            
             inputField.disabled = true;
             wrapper.style.pointerEvents = 'none';
             wrapper.style.opacity = '0.6';
-            txtLabel.innerHTML = '<span style="color: #10b981;">✔ Série histórica carregada e protegida</span>';
+            txtLabel.innerHTML = '<span style="color: #10b981;">✔ Série histórica protegida</span>';
             document.getElementById('btn_limpar_ipca_container').style.display = 'block';
         } else {
             alertBox.className = 'alert alert-error';
             alertBox.innerText = data.mensagem;
             alertBox.style.display = 'block';
-            txtLabel.innerHTML = 'Clique para importar a série <strong>preco12_ipca12</strong>';
         }
-    })
-    .catch(() => {
-        alertBox.className = 'alert alert-error';
-        alertBox.innerText = 'Erro na transmissão da série IPCA. Tente novamente.';
-        alertBox.style.display = 'block';
-        txtLabel.innerHTML = 'Clique para importar a série <strong>preco12_ipca12</strong>';
     });
 }
 
@@ -208,7 +174,6 @@ function limparArquivoIpca() {
             alertBox.className = 'alert alert-success';
             alertBox.innerText = data.mensagem;
             alertBox.style.display = 'block';
-            
             inputField.disabled = false;
             inputField.value = '';
             wrapper.style.pointerEvents = 'auto';
@@ -228,29 +193,19 @@ function dispararPipeline() {
     alertBox.style.display = 'none';
     document.getElementById('bloco-downloads').style.display = 'none';
     btn.disabled = true;
-    btn.innerText = "Executando processamento...";
+    btn.innerText = "Computando de acordo com as regras de negócio...";
 
     fetch('/processar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ano_base: anoBase, modo: modoExecucao })
     })
-    .then(res => {
-        return res.json().then(data => {
-            if (!res.ok) throw new Error(data.mensagem || 'Erro na execução interna.');
-            return data;
-        });
-    })
+    .then(res => res.json())
     .then(data => {
-        alertBox.className = 'alert alert-success';
+        alertBox.className = data.status === 'sucesso' ? 'alert alert-success' : 'alert alert-error';
         alertBox.innerText = data.mensagem;
         alertBox.style.display = 'block';
-        document.getElementById('bloco-downloads').style.display = 'block';
-    })
-    .catch(err => {
-        alertBox.className = 'alert alert-error';
-        alertBox.innerText = err.message;
-        alertBox.style.display = 'block';
+        if (data.status === 'sucesso') document.getElementById('bloco-downloads').style.display = 'block';
     })
     .finally(() => {
         btn.disabled = false;
@@ -258,16 +213,12 @@ function dispararPipeline() {
     });
 }
 
-// ==============================================================================
-// 🌍 SCRIPT DE CONTROLE: MÓDULO ECONOMIA REGIONAL
-// ==============================================================================
-
 function enviarLoteRegional(arquivos) {
     if (arquivos.length === 0) return;
     const txtLabel = document.getElementById('label_regional');
     const alertBox = document.getElementById('resultado-regional');
     alertBox.style.display = 'none';
-    txtLabel.innerText = `Processando upload de ${arquivos.length} arquivo(s)...`;
+    txtLabel.innerText = `Enviando ${arquivos.length} matriz(es)...`;
 
     const envios = Array.from(arquivos).map(arquivo => {
         const formData = new FormData();
@@ -281,16 +232,14 @@ function enviarLoteRegional(arquivos) {
         const erros = resultados.filter(r => r.status === 'erro');
         if (erros.length === 0) {
             alertBox.className = 'alert alert-success';
-            alertBox.innerText = `${arquivos.length} matriz(es) territorial(is) carregada(s) com sucesso.`;
+            alertBox.innerText = 'Matrizes territoriais carregadas.';
             alertBox.style.display = 'block';
-            setTimeout(() => { window.location.reload(); }, 1500);
+            setTimeout(() => { window.location.reload(); }, 1200);
         } else {
             alertBox.className = 'alert alert-error';
-            alertBox.innerText = 'Falha no processamento das planilhas regionais.';
+            alertBox.innerText = 'Erro operacional no upload regional.';
             alertBox.style.display = 'block';
         }
-    }).finally(() => {
-        txtLabel.innerHTML = 'Clique ou arraste as matrizes de emprego regional<br><small style="color: var(--text-secondary); display: block; margin-top: 4px; font-size: 11px;">Formatos aceitos: .csv, .xlsx</small>';
     });
 }
 
@@ -298,28 +247,15 @@ function removerPlanilhaRegional(nomeArquivo) {
     const alertBox = document.getElementById('resultado-regional');
     alertBox.style.display = 'none';
 
-    if (!confirm(`Deseja remover permanentemente o arquivo "${nomeArquivo}" do repositório regional?`)) {
-        return;
-    }
+    if (!confirm(`Deseja remover o arquivo "${nomeArquivo}"?`)) return;
 
     fetch(`/limpar/regional/${encodeURIComponent(nomeArquivo)}`, { method: 'POST' })
     .then(res => res.json())
     .then(data => {
-        if (data.status === 'sucesso') {
-            alertBox.className = 'alert alert-success';
-            alertBox.innerText = data.mensagem;
-            alertBox.style.display = 'block';
-            setTimeout(() => { window.location.reload(); }, 1200);
-        } else {
-            alertBox.className = 'alert alert-error';
-            alertBox.innerText = data.mensagem;
-            alertBox.style.display = 'block';
-        }
-    })
-    .catch(() => {
-        alertBox.className = 'alert alert-error';
-        alertBox.innerText = 'Erro ao processar a exclusão do arquivo regional.';
+        alertBox.className = data.status === 'sucesso' ? 'alert alert-success' : 'alert alert-error';
+        alertBox.innerText = data.mensagem;
         alertBox.style.display = 'block';
+        if (data.status === 'sucesso') setTimeout(() => { window.location.reload(); }, 1200);
     });
 }
 
@@ -329,39 +265,26 @@ function removerPlanilhasRegionalEmLote() {
     alertBox.style.display = 'none';
 
     if (checkboxes.length === 0) {
-        alert('Por favor, selecione pelo menos uma planilha regional para exclusão.');
+        alert('Selecione pelo menos uma planilha.');
         return;
     }
 
-    if (!confirm(`Deseja remover permanentemente os ${checkboxes.length} arquivos selecionados?`)) {
-        return;
-    }
+    if (!confirm('Deseja remover as planilhas selecionadas?')) return;
 
     const btnLote = document.getElementById('btn-remover-lote-reg');
     btnLote.disabled = true;
-    btnLote.innerText = "Excluindo...";
 
     const enviosExclusao = Array.from(checkboxes).map(chk => {
-        const nomeArquivo = chk.value;
-        return fetch(`/limpar/regional/${encodeURIComponent(nomeArquivo)}`, { method: 'POST' })
+        return fetch(`/limpar/regional/${encodeURIComponent(chk.value)}`, { method: 'POST' })
             .then(res => res.json())
             .catch(() => ({ status: 'erro' }));
     });
 
     Promise.all(enviosExclusao).then(resultados => {
-        const erros = resultados.filter(r => r.status === 'erro');
-        if (erros.length === 0) {
-            alertBox.className = 'alert alert-success';
-            alertBox.innerText = `${checkboxes.length} planilha(s) removida(s) com sucesso.`;
-            alertBox.style.display = 'block';
-            setTimeout(() => { window.location.reload(); }, 1500);
-        } else {
-            alertBox.className = 'alert alert-error';
-            alertBox.innerText = 'Erro ao tentar remover algumas planilhas regionais.';
-            alertBox.style.display = 'block';
-            btnLote.disabled = false;
-            btnLote.innerText = "🗑️ Excluir Selecionados";
-        }
+        alertBox.className = 'alert alert-success';
+        alertBox.innerText = 'Operação de limpeza concluída.';
+        alertBox.style.display = 'block';
+        setTimeout(() => { window.location.reload(); }, 1200);
     });
 }
 
@@ -369,12 +292,10 @@ function dispararPipelineRegional() {
     const btn = document.getElementById('btn-run-regional');
     const alertBox = document.getElementById('resultado-regional');
     const indicador = document.querySelector('input[name="indicador_regional"]:checked').value;
-    
-    // 🌟 Captura o estado da checkbox intermediária
     const chkMatrizes = document.getElementById('exportar_matrizes');
     const exportarMatrizes = chkMatrizes ? chkMatrizes.checked : false;
 
-    if (btn) { btn.disabled = true; btn.innerText = "Calculando..."; }
+    if (btn) { btn.disabled = true; btn.innerText = "Executando equações matriciais..."; }
     if (alertBox) alertBox.style.display = 'none';
     document.getElementById('bloco-downloads-regional').style.display = 'none';
 
@@ -383,29 +304,24 @@ function dispararPipelineRegional() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             indicador: indicador,
-            exportar_matrizes: exportarMatrizes // Sent to backend
+            exportar_matrizes: exportarMatrizes
         })
     })
     .then(res => res.json())
     .then(data => {
-        if (alertBox) {
-            alertBox.className = data.status === 'sucesso' ? 'alert alert-success' : 'alert alert-error';
-            alertBox.innerText = data.mensagem;
-            alertBox.style.display = 'block';
-        }
+        alertBox.className = data.status === 'sucesso' ? 'alert alert-success' : 'alert alert-error';
+        alertBox.innerText = data.mensagem;
+        alertBox.style.display = 'block';
         if (data.status === 'sucesso') document.getElementById('bloco-downloads-regional').style.display = 'block';
     })
     .finally(() => {
         if (btn) { btn.disabled = false; btn.innerText = "Processar Dados Regionais"; }
     });
 }
-// --- UTILITÁRIOS GLOBAIS ---
+
 function abrirDiretorioResultados() {
     fetch('/abrir_pasta', { method: 'POST' })
     .then(res => res.json())
-    .then(data => {
-        if (data.status !== 'sucesso') alert(data.mensagem);
-    })
     .catch(() => {
         alert('Erro ao requisitar a abertura do diretório local.');
     });

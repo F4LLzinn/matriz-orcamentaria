@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plataforma de Métodos Quantitativos Aplicados (PMQA)</title>
+    <title>Nexus Econômico • PMQA</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -20,13 +20,14 @@
     </div>
 
     <div class="header-area">
-        <h1>App do Economista</h1>
-        <p class="subtitle">Selecione o módulo operacional para análise e manipulação de dados</p>
+        <div class="app-logo-placeholder">⚡</div>
+        <h1>Nexus Econômico</h1>
+        <p class="subtitle">Módulos integrados para análise econométrica e inteligência orçamentária</p>
     </div>
 
-    <div style="display: flex; flex-direction: column; gap: 20px; margin-top: 30px;">
+    <div class="menu-grid" style="display: flex; flex-direction: column; gap: 20px; margin-top: 30px;">
         
-        <div class="status-card" style="cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;" 
+        <div class="status-card" style="cursor: pointer; transition: transform 0.2s ease;" 
              onclick="window.location.href='/orcamento'" 
              onmouseover="this.style.transform='scale(1.015)'" 
              onmouseout="this.style.transform='scale(1)'">
@@ -35,22 +36,22 @@
                 <div style="text-align: left;">
                     <h3 style="color: var(--text-primary); font-size: 15px; font-weight: 800; letter-spacing: -0.3px;">Orçamento Público</h3>
                     <p style="color: var(--text-secondary); font-size: 11.5px; margin-top: 4px; line-height: 1.4;">
-                        Consolidação de matrizes históricas do Siga Brasil e rotinas automáticas de deflacionamento por IPCA.
+                        Consolidação automatizada e rotinas de deflacionamento de séries históricas por indexadores de preço (IPCA).
                     </p>
                 </div>
             </div>
         </div>
 
-        <div class="status-card" style="cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;" 
+        <div class="status-card" style="cursor: pointer; transition: transform 0.2s ease;" 
              onclick="window.location.href='/regional'" 
              onmouseover="this.style.transform='scale(1.015)'" 
              onmouseout="this.style.transform='scale(1)'">
             <div style="display: flex; align-items: center; gap: 20px;">
                 <span style="font-size: 32px;">🌍</span>
                 <div style="text-align: left;">
-                    <h3 style="color: var(--text-primary); font-size: 15px; font-weight: 800; letter-spacing: -0.3px;">Economia Regional</h3>
+                    <h3 style="color: var(--text-primary); font-size: 15px; font-weight: 800; letter-spacing: -0.3px;">Economia Regional & Urbana</h3>
                     <p style="color: var(--text-secondary); font-size: 11.5px; margin-top: 4px; line-height: 1.4;">
-                        Cálculo imediato de Quociente Locacional (QL), Coeficiente de Especialização (CE) e matrizes de Shift-Share.
+                        Análise de especialização territorial (QL, CE) e diagnóstico de dependência espacial com Índice de Moran Global e Local.
                     </p>
                 </div>
             </div>
@@ -61,7 +62,7 @@
     <div class="section-divider"></div>
     
     <p style="text-align: center; font-size: 11px; color: var(--text-secondary); font-weight: 700; letter-spacing: 0.5px;">
-        ENGINE COMPONENT v2.0 • 2026
+        NEXUS CORE ENGINE v2.0 • 2026
     </p>
 </div>
 
