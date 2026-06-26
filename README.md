@@ -21,10 +21,6 @@ O **Kairós** é um ecossistema integrado e modular desenvolvido para a automaç
 * **QL Leave-One-Out (LOO):** Ajuste com correção de escala para eliminação de distorções em regiões de forte peso econômico.
 * **Coeficiente de Especialização (CE):** Mensuração sintética do desvio estrutural de emprego das localidades em relação ao comportamento macro nacional.
 * **[Experimental] Análise de Dependência Espacial:** Motor configurado para acoplamento de Shapefiles do IBGE, calculando o Índice de Moran Global e Local (LISA) para a Indústria de Transformação.
-### 2. Análise Econômica Regional (Mercado de Trabalho)
-* **Quociente Locacional (QL Tradicional):** Identificação de especializações produtivas locais através de duplo fechamento.
-* **QL Leave-One-Out (LOO):** Ajuste com correção de escala para eliminação de distorções em regiões de forte peso econômico.
-* **Coeficiente de Especialização (CE):** Mensuração sintética do desvio estrutural de emprego das localidades em relação ao comportamento macro nacional.
 
 ---
 
