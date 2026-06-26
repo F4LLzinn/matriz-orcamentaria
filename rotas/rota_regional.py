@@ -54,7 +54,8 @@ def processar_regional():
 
         caminho_planilha = os.path.join(DIR_INPUTS_REGIONAL, arquivos[0])
         
-        df_trabalho, col_territorio, col_setor, col_variavel = processar_e_padronizar_layout(caminho_planilha)
+        # 🛡️ Integração Corrigida: Recebendo a variável macroregioes para matar o erro de unpack
+        df_trabalho, col_territorio, col_setor, col_variavel, macroregioes = processar_e_padronizar_layout(caminho_planilha)
 
         resultado = calcular_indicadores_regionais(
             df_trabalho, col_territorio, col_setor, col_variavel, 
