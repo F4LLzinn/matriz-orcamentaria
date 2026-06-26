@@ -1,3 +1,19 @@
+## 🛑 Estado Atual do Desenvolvimento (Parado para proteger minha sanidade mental)
+
+Se você veio aqui esperando um app rodando 100% de forma mágica, sinto informar que a vida não é um morango...
+
+* **O Motor Matemático (`core/`):** Até calcula as matrizes regionais (QL e CE), mas só se a base for perfeitamente estruturada e não tiver um único acento errado. Passei horas junto com a IA passando tentando entender o porque dos erros e do código não está respondendo ao que eu estava querendo, deixar o código blindado para qualquer tipo de formatação que o usuário upasse no app, mas não deu certo em algumas das poucas funções que tem.
+* **A Guerra do Excel:** Depois de muita tortura psicológica, o Pandas finalmente aprendeu a salvar os arquivos sem transformar os acentos em hieróglifos no Excel em inglês, e para quem usa o Excel em português... bom, não testei então não sei se ta funcionando, pois é gerado arquivos .csv porque é mais leve e facil para o python escrever.
+* **O Bug Invicto:** O principal motivo que eu perdi a paciência com esse código foi justamente na parte de criar um filtro de regiões, o que era para ser algo simples mas se tornou quase uma tarefa impossivel... o código até faz o filtro mas quando testei para a região nordeste que era justamente o que uma atividade minha da faculdade pedia, dentre as 42 mesorregiões do Nordeste, o código apenas filtrava 25 mesorregiões passei horas tentando resolver e entender o porque disso junto com a IA, mas como não sou de programação e comecei por puro hobby e tentantiva de aprender sozinho, desiste depois de horas sem resolver esse problema e decidir fazer o que precisava não mão mesmo dentro do próprio excel.
+
+**Conclusão:** após horas de tentativa e erro, obtive mais erros do que sucessos, então decidi dar uma pausa no meu estudo em programação e voltar para o que eu ja tenho uma noção maior que é o mundo do suíte adobe, edição de video e design gráfico. 
+
+O código está parado por puro ódio. Desisti momentaneamente da programação, e voltei para o Photoshop, Premiere e After Effects, que é onde a vida faz sentido, o resultado é visual e não tem nenhuma string maldita ou erro 500 tirando minha paz, isso que eu quis fazer algo simples e com uma das linguagens mais simples... se fosse algo realmente grande e complexo acho que nem iniciar o app eu conseguiria kkkkk, enfim essa vai ser a ultima att desse projeto e ta tudo quase que incompleto, talvez um dia eu retorne a ele, um dia... quem sabe...
+
+---
+---
+---
+
 # ⏳ Kairós • Econometric Ecosystem (v2.0)
 
 O **Kairós** é um ecossistema integrado e modular desenvolvido para a automação de pipelines de dados públicos, análise econométrica regional e consolidação orçamentária. O sistema unifica ferramentas analíticas sob uma arquitetura Flask estável e uma interface NeuMorphism.

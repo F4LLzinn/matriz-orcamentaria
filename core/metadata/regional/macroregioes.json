@@ -1,0 +1,45 @@
+{
+  "Nordeste": [
+    "Norte Maranhense", "Oeste Maranhense", "Centro Maranhense", "Leste Maranhense", "Sul Maranhense",
+    "Norte Piauiense", "Centro-Norte Piauiense", "Sudoeste Piauiense", "Sudeste Piauiense",
+    "Noroeste Cearense", "Norte Cearense", "Metropolitana de Fortaleza", "Sertões Cearenses", 
+    "Jaguaribe", "Centro-Sul Cearense", "Sul Cearense",
+    "Oeste Potiguar", "Central Potiguar", "Agreste Potiguar", "Leste Potiguar",
+    "Sertão Paraibano", "Borborema", "Agreste Paraibano", "Mata Paraibana",
+    "Sertão Pernambucano", "São Francisco Pernambucano", "Agreste Pernambucano", 
+    "Mata Pernambucana", "Metropolitana de Recife",
+    "Sertão Alagoano", "Agreste Alagoano", "Leste Alagoano",
+    "Sertão Sergipano", "Agreste Sergipano", "Leste Sergipano",
+    "Extremo Oeste Baiano", "Vale São-Franciscano da Bahia", "Centro Norte Baiano", 
+    "Nordeste Baiano", "Metropolitana de Salvador", "Centro Sul Baiano", "Sul Baiano"
+  ],
+  "Norte": [
+    "Madeira-Guaporé", "Leste Rondoniense", "Vale do Juruá", "Vale do Acre", 
+    "Norte Amazonense", "Sudoeste Amazonense", "Centro Amazonense", "Sul Amazonense", 
+    "Norte de Roraima", "Sul de Roraima", "Baixo Amazonas", "Marajó", 
+    "Metropolitana de Belém", "Nordeste Paraense", "Sudoeste Paraense", "Sudeste Paraense", 
+    "Norte do Amapá", "Sul do Amapá", "Ocidental do Tocantins", "Oriental do Tocantins"
+  ],
+  "Sudeste": [
+    "Noroeste de Minas", "Norte de Minas", "Jequitinhonha", "Vale do Mucuri", 
+    "Triângulo Mineiro/Alto Paranaíba", "Central Mineira", "Metropolitana de Belo Horizonte", 
+    "Vale do Rio Doce", "Oeste de Minas", "Sul/Sudoeste de Minas", "Campo das Vertentes", "Zona da Mata",
+    "Noroeste Espírito-santense", "Litoral Norte Espírito-santense", "Central Espírito-santense", "Sul Espírito-santense",
+    "Noroeste Fluminense", "Norte Fluminense", "Centro Fluminense", "Baixadas", "Sul Fluminense", "Metropolitana do Rio de Janeiro",
+    "São José do Rio Preto", "Ribeirão Preto", "Araçatuba", "Bauru", "Araraquara", "Piracicaba", "Campinas", 
+    "Presidente Prudente", "Marília", "Assis", "Itapetininga", "Macro Metropolitana Paulista", 
+    "Vale do Paraíba Paulista", "Litoral Sul Paulista", "Metropolitana de São Paulo"
+  ],
+  "Sul": [
+    "Noroeste Paranaense", "Centro Ocidental Paranaense", "Norte Central Paranaense", "Norte Pioneiro Paranaense", 
+    "Centro Oriental Paranaense", "Oeste Paranaense", "Sudoeste Paranaense", "Centro-Sul Paranaense", "Sudeste Paranaense", "Metropolitana de Curitiba",
+    "Oeste Catarinense", "Norte Catarinense", "Serrana", "Vale do Itajaí", "Grande Florianópolis", "Sul Catarinense",
+    "Noroeste Rio-grandense", "Nordeste Rio-grandense", "Centro Ocidental Rio-grandense", "Centro Oriental Rio-grandense", 
+    "Metropolitana de Porto Alegre", "Sudoeste Rio-grandense", "Sudeste Rio-grandense"
+  ],
+  "Centro-Oeste": [
+    "Pantanais Sul Mato-grossense", "Centro Norte de Mato Grosso do Sul", "Leste de Mato Grosso do Sul", "Sudoeste de Mato Grosso do Sul",
+    "Norte Mato-grossense", "Nordeste Mato-grossense", "Sudoeste Mato-grossense", "Centro-Sul Mato-grossense", "Sudeste Mato-grossense",
+    "Noroeste Goiano", "Norte Goiano", "Centro Goiano", "Leste Goiano", "Sul Goiano", "Distrito Federal"
+  ]
+}

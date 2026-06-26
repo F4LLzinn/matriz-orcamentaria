@@ -1,0 +1,38 @@
+{
+  "Nordeste": [
+    "Aracaju", "Nossa Senhora do Socorro", "Lagarto", "Itabaiana", "Estância", "Tobias Barreto", "Simão Dias", "São Cristóvão", "Propriá",
+    "Salvador", "Feira de Santana", "Vitória da Conquista", "Camaçari", "Itabuna", "Ilhéus", "Juazeiro", "Barreiras",
+    "Recife", "Jaboatão dos Guararapes", "Olinda", "Caruaru", "Petrolina", "Paulista", "Cabo de Santo Agostinho",
+    "Fortaleza", "Caucaia", "Juazeiro do Norte", "Maracanaú", "Sobral", "Crato", "Itapipoca",
+    "Natal", "Mossoró", "Parnamirim", "Caicó", "Macau",
+    "João Pessoa", "Campina Grande", "Santa Rita", "Patos",
+    "Maceió", "Arapiraca", "Palmeira dos Índios", "Rio Largo",
+    "Teresina", "Parnaíba", "Picos", "Floriano",
+    "São Luís", "Imperatriz", "Timon", "Caxias", "Codó"
+  ],
+  "Sudeste": [
+    "São Paulo", "Campinas", "Santos", "Guarulhos", "São Bernardo do Campo", "Ribeirão Preto", "São José dos Campos", "Sorocaba",
+    "Rio de Janeiro", "Niterói", "Duque de Caxias", "São Gonçalo", "Nova Iguaçu", "Campos dos Goytacazes",
+    "Belo Horizonte", "Uberlândia", "Contagem", "Juiz de Fora", "Betim", "Montes Claros", "Uberaba",
+    "Vitória", "Vila Velha", "Serra", "Cariacica", "Linhares"
+  ],
+  "Sul": [
+    "Porto Alegre", "Caxias do Sul", "Canoas", "Pelotas", "Santa Maria", "Gravataí",
+    "Curitiba", "Londrina", "Maringá", "Ponta Grossa", "Cascavel", "São José dos Pinhais",
+    "Florianópolis", "Joinville", "Blumenau", "Chapeco", "Itajaí", "Criciúma"
+  ],
+  "Centro-Oeste": [
+    "Brasília", "Goiânia", "Aparecida de Goiânia", "Anápolis", "Rio Verde",
+    "Cuiabá", "Várzea Grande", "Rondonópolis", "Sinop",
+    "Campo Grande", "Dourados", "Três Lagoas"
+  ],
+  "Norte": [
+    "Manaus", "Parintins", "Itacoatiara",
+    "Belém", "Ananindeua", "Santarém", "Marabá", "Parauapebas", "Castanhal",
+    "Porto Velho", "Ji-Paraná", "Ariqmes",
+    "Rio Branco", "Cruzeiro do Sul",
+    "Boa Vista",
+    "Macapá", "Santana",
+    "Palmas", "Araguaína", "Gurupi"
+  ]
+}

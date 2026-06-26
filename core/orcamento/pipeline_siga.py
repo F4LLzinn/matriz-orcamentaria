@@ -125,7 +125,8 @@ def executar_unificacao_matrizes():
 
         print(f"\033[1;32m[SUCESSO]\033[0m Matriz unificada persistida em: '{caminho_saida}'")
 
-        caminho_config_json = os.path.join(RAIZ_PROJETO, 'config_mapeamento.json')
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        caminho_config_json = os.path.join(base_dir, '..', 'metadata', 'orcamento', 'mapeamento.json')
         config_automatico = {
             "coluna_ano": "ano",
             "colunas_financeiras": colunas_financeiras_detectadas

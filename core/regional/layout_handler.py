@@ -1,106 +1,95 @@
 import os
-import pandas as pd
 import re
+import pandas as pd
 
-def processar_e_padronizar_layout(caminho_completo):
-    print("\n\033[1;34m[PMQA :: REGIONAL::LAYOUT]\033[0m Analisando estrutura semântica da matriz...")
+def detectar_layout(caminho_arquivo, resolvedor_ibge=None):
+    """
+    Carrega planilhas regionais brutas da RAIS/MTE de forma 100% agnóstica.
+    Varre o topo do arquivo para localizar onde o cabeçalho real começa,
+    evitando que o Pandas mutile colunas por causa de títulos acessórios.
+    """
+    encoding_alvo = 'utf-8'
+    try:
+        with open(caminho_arquivo, 'r', encoding='utf-8', errors='ignore') as f:
+            amostra_linhas = [f.readline() for _ in range(15)]
+    except Exception:
+        with open(caminho_arquivo, 'r', encoding='latin-1', errors='ignore') as f:
+            amostra_linhas = [f.readline() for _ in range(15)]
+            encoding_alvo = 'latin-1'
+
+    total_pv = sum(l.count(';') for l in amostra_linhas)
+    total_v = sum(l.count(',') for l in amostra_linhas)
+    sep_detectado = ';' if total_pv >= total_v else ','
+
+    max_colunas = 0
+    linha_header_idx = 0
+    for idx, l in enumerate(amostra_linhas):
+        num_cols = len(l.split(sep_detectado))
+        if num_cols > max_colunas:
+            max_colunas = num_cols
+            linha_header_idx = idx
+
+    print(f"\033[1;34m[PMQA :: PARSER]\033[0m Separador: '{sep_detectado}' | Header Real na Linha: {linha_header_idx}")
+
+    try:
+        df = pd.read_csv(caminho_arquivo, sep=sep_detectado, skiprows=linha_header_idx, encoding='utf-8')
+    except (UnicodeDecodeError, Exception):
+        # Se falhar de verdade no UTF-8, aí sim recorre ao padrão antigo do Excel
+        df = pd.read_csv(caminho_arquivo, sep=sep_detectado, skiprows=linha_header_idx, encoding='latin-1')
+
+    col_territorio = df.columns[0]
+    col_setores = [c for c in df.columns[1:] if c != 'Total' and not str(c).startswith('Unnamed')]
     
-    arquivo_alvo = os.path.basename(caminho_completo)
+    df = df[df[col_territorio].notna()].copy()
+    df[col_territorio] = df[col_territorio].astype(str).str.strip()
     
-    if arquivo_alvo.endswith('.xlsx') or arquivo_alvo.endswith('.xls'):
-        df_bruto = pd.read_excel(caminho_completo)
-    else:
-        codificacao = 'utf-8'
-        try:
-            with open(caminho_completo, 'r', encoding='utf-8') as f:
-                linhas = f.readlines()
-        except UnicodeDecodeError:
-            codificacao = 'latin1'
-            with open(caminho_completo, 'r', encoding='latin1') as f:
-                linhas = f.readlines()
-            
-        separador = ';' if any(';' in linha for linha in linhas[:5]) else ','
-        radicais_territorio = ['mesorreg', 'municip', 'uf', 'localid', 'territor', 'regia', 'regiã', 'codigo', 'código']
+    linhas_para_ignorar = ['variável', 'ano', 'vínculo', 'total', 'ibge setor', 'seleções vigentes']
+    df = df[~df[col_territorio].str.lower().str.strip().isin(linhas_para_ignorar)].copy()
+
+    for col in col_setores:
+        df[col] = pd.to_numeric(df[col].astype(str).str.replace('.', '', regex=False).str.replace(',', '.', regex=False), errors='coerce').fillna(0)
+    
+    df['Total'] = df[col_setores].sum(axis=1)
+
+    df_longo = df.melt(
+        id_vars=[col_territorio],
+        value_vars=col_setores,
+        var_name='Setor',
+        value_name='Emprego'
+    )
+
+    macroregioes = {}
+    localidades_unicas = df_longo[col_territorio].unique()
+    
+    if len(localidades_unicas) == 0:
+        raise ValueError("Erro crítico: Nenhuma localidade sobrou após a filtragem de layout.")
         
-        linha_cabecalho_idx = 0
-        for idx, linha in enumerate(linhas):
-            primeira_celula = linha.split(separador)[0].strip().lower()
-            if any(radical in primeira_celula for radical in radicais_territorio):
-                linha_cabecalho_idx = idx
-                break
-                
-        linhas_validas = linhas[linha_cabecalho_idx:]
-        caminho_temporario = caminho_completo + '.tmp'
-        with open(caminho_temporario, 'w', encoding=codificacao) as f:
-            f.writelines(linhas_validas)
-            
-        df_bruto = pd.read_csv(caminho_temporario, sep=separador, encoding=codificacao)
-        if os.path.exists(caminho_temporario):
-            os.remove(caminho_temporario)
-
-    # 1. Mapeamento dos nomes dos setores antes da limpeza numérica
-    mapeamento_setores = {}
-    novas_colunas = []
-    for i, c in enumerate(df_bruto.columns):
-        c_str = str(c).strip()
-        if i == 0:
-            novas_colunas.append(c_str)
-        else:
-            num_setor = re.findall(r'^\d+', c_str)
-            if num_setor:
-                mapeamento_setores[num_setor[0]] = c_str
-                novas_colunas.append(num_setor[0])
+    primeira_localidade = str(localidades_unicas[0]).strip()
+    
+    if re.match(r'^\d+', primeira_localidade):
+        print("\033[1;32m[PMQA :: TERRITÓRIO]\033[0m Modo ID Ativado. Decodificando via prefixos do IBGE.")
+        mapa_regioes_ibge = {'1': 'Norte', '2': 'Nordeste', '3': 'Sudeste', '4': 'Sul', '5': 'Centro-Oeste'}
+        for loc in localidades_unicas:
+            match_id = re.match(r'^\d+', str(loc).strip())
+            if match_id:
+                macroregioes[loc] = mapa_regioes_ibge.get(match_id.group(0)[0], 'Outros')
             else:
-                novas_colunas.append(c_str)
-    df_bruto.columns = novas_colunas
+                macroregioes[loc] = 'Outros'
 
-    col_territorio = df_bruto.columns[0]
-
-    # 2. Passar o rodo definitivo em linhas fantasmas e metadados duplicados
-    padrao_remover = 'Seleções|SeleÃ§Ãµes|Variável|VariÃ¡vel|{ñ class}|{Ã± class}|Critério|CritÃ©rio|Total|Ano|Vínculo|VÃnculo|IBGE Setor|Coluna|mesorreg'
-    
-    df_bruto = df_bruto[
-        df_bruto[col_territorio].notna() & 
-        (df_bruto[col_territorio].astype(str).str.strip() != '') &
-        (~df_bruto[col_territorio].astype(str).str.contains(padrao_remover, case=False, na=False))
-    ].copy()
-
-    setores_potenciais = [c for c in df_bruto.columns if c != col_territorio and str(c).upper() != 'TOTAL']
-    
-    for col in setores_potenciais:
-        df_bruto[col] = df_bruto[col].astype(str).str.replace('.', '', regex=False)
-        df_bruto[col] = df_bruto[col].str.replace(',', '.', regex=False)
-        df_bruto[col] = pd.to_numeric(df_bruto[col], errors='coerce').fillna(0.0)
-
-    colunas_numericas = df_bruto.select_dtypes(include=['float64', 'int64']).columns.tolist()
-    if col_territorio in colunas_numericas: 
-        colunas_numericas.remove(col_territorio)
-
-    if len(colunas_numericas) > 1:
-        print("\033[1;32m[PMQA :: DETECT]\033[0m Padrão 'Wide Matrix' identificado. Executando empilhamento...")
-        for t in ['Total', 'TOTAL', 'total']:
-            if t in colunas_numericas: colunas_numericas.remove(t)
-            if t in df_bruto.columns: df_bruto.drop(columns=[t], inplace=True)
+    elif resolvedor_ibge is not None:
+        var_nome_normalizado = str(col_territorio).strip().lower()
+        print(f"\033[1;32m[PMQA :: TERRITÓRIO]\033[0m Modo API/Cache Ativado para: '{col_territorio}'")
         
-        df_trabalho = pd.melt(
-            df_bruto, id_vars=[col_territorio], value_vars=colunas_numericas,
-            var_name='Setor', value_name='Empregos'
-        )
-        col_setor, col_variavel = 'Setor', 'Empregos'
+        if 'municip' in var_nome_normalizado:
+            for loc in localidades_unicas:
+                info = resolvedor_ibge.mapa_municipios.get(str(loc).strip().lower(), {})
+                macroregioes[loc] = info.get('Macroregiao', 'Outros')
+        else:
+            for loc in localidades_unicas:
+                macroregioes[loc] = resolvedor_ibge.mapa_mesorregioes.get(str(loc).strip().lower(), 'Outros')
+    
     else:
-        print("\033[1;32m[PMQA :: DETECT]\033[0m Padrão 'Long Table' identificado. Mapeando colunas...")
-        df_trabalho = df_bruto.copy()
-        col_variavel = colunas_numericas[0] if colunas_numericas else df_trabalho.columns[-1]
-        colunas_texto = [c for c in df_trabalho.columns if c != col_variavel]
-        col_territorio = colunas_texto[0]
-        col_setor = colunas_texto[1] if len(colunas_texto) > 1 else colunas_texto[0]
+        print("\033[1;33m[PMQA :: AVISO]\033[0m Resolvedor IBGE indisponível. Escopo amplo.")
+        for loc in localidades_unicas: macroregioes[loc] = 'Todos'
 
-    df_trabalho[col_variavel] = pd.to_numeric(df_trabalho[col_variavel], errors='coerce').fillna(0.0)
-    
-    # Devolve o descritivo completo para a coluna de setores antes do retorno
-    df_trabalho[col_setor] = df_trabalho[col_setor].astype(str).map(mapeamento_setores).fillna(df_trabalho[col_setor])
-    
-    # Retorna uma lista única de regiões encontradas para alimentar a sua tela do Front-end
-    regioes_detectadas = sorted(df_trabalho[col_territorio].unique().tolist())
-    
-    return df_trabalho, col_territorio, col_setor, col_variavel, regioes_detectadas
+    return df_longo, col_territorio, 'Setor', 'Emprego', macroregioes

@@ -17,9 +17,10 @@ def limpar_mascara_financeira(serie):
 def executar_calculo_deflacionamento():
     print("\n\033[1;34m[PMQA :: CALCULADORA]\033[0m Iniciando processamento vetorial de valores reais...")
     
-    caminho_config = os.path.join(RAIZ_PROJETO, 'config_mapeamento.json')
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    caminho_config = os.path.join(base_dir, '..', 'metadata', 'orcamento', 'mapeamento.json')
     if not os.path.exists(caminho_config):
-        print("\033[1;31m[ERRO :: CONFIG]\033[0m Metadados 'config_mapeamento.json' não encontrados.")
+        print("\033[1;31m[ERRO :: CONFIG]\033[0m Metadados 'mapeamento.json' não encontrados.")
         raise FileNotFoundError()
 
     with open(caminho_config, 'r', encoding='utf-8') as f:

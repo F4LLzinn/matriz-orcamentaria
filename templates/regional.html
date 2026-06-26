@@ -62,6 +62,18 @@
             <h2 class="section-title">🧠 Configuração dos Indicadores</h2>
             <p class="card-description">Selecione a métrica matemática estrutural para rodar nas matrizes.</p>
             
+            <div class="control-group">
+                <label for="filtro_macroregiao">Recorte Geográfico da Análise:</label>
+                <select id="filtro_macroregiao" name="filtro_macroregiao" class="custom-select">
+                    <option value="Todos" selected>Brasil Inteiro (Abordagem Interregional)</option>
+                    <option value="Nordeste">Apenas Região Nordeste</option>
+                    <option value="Norte">Apenas Região Norte</option>
+                    <option value="Sudeste">Apenas Região Sudeste</option>
+                    <option value="Sul">Apenas Região Sul</option>
+                    <option value="Centro-Oeste">Apenas Região Centro-Oeste</option>
+                </select>
+            </div>
+            
             <div class="radio-group-container" style="display: flex; flex-direction: column; gap: 12px; margin: 20px 0;">
                 <label class="radio-option-wrapper" style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer;">
                     <input type="radio" name="indicador_regional" value="ql_tradicional" checked style="margin-top: 3px;">

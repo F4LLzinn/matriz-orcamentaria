@@ -295,6 +295,10 @@ function dispararPipelineRegional() {
     const chkMatrizes = document.getElementById('exportar_matrizes');
     const exportarMatrizes = chkMatrizes ? chkMatrizes.checked : false;
 
+    // 🌟 CAPTURA O FILTRO DO SELECIONADOR GEOGRÁFICO
+    const filtroMacro = document.getElementById('filtro_macroregiao');
+    const filtroMacroregiao = filtroMacro ? filtroMacro.value : 'Todos';
+
     if (btn) { btn.disabled = true; btn.innerText = "Executando equações matriciais..."; }
     if (alertBox) alertBox.style.display = 'none';
     document.getElementById('bloco-downloads-regional').style.display = 'none';
@@ -304,7 +308,8 @@ function dispararPipelineRegional() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             indicador: indicador,
-            exportar_matrizes: exportarMatrizes
+            exportar_matrizes: exportarMatrizes,
+            filtro_macroregiao: filtroMacroregiao // 🌟 Envia dinamicamente a escolha do usuário
         })
     })
     .then(res => res.json())
@@ -316,13 +321,5 @@ function dispararPipelineRegional() {
     })
     .finally(() => {
         if (btn) { btn.disabled = false; btn.innerText = "Processar Dados Regionais"; }
-    });
-}
-
-function abrirDiretorioResultados() {
-    fetch('/abrir_pasta', { method: 'POST' })
-    .then(res => res.json())
-    .catch(() => {
-        alert('Erro ao requisitar a abertura do diretório local.');
     });
 }
