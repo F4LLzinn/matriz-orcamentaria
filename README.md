@@ -1,6 +1,11 @@
 # ⏳ Kairós • Econometric Ecosystem (v2.0)
 
 O **Kairós** é um ecossistema integrado e modular desenvolvido para a automação de pipelines de dados públicos, análise econométrica regional e consolidação orçamentária. O sistema unifica ferramentas analíticas sob uma arquitetura Flask estável e uma interface NeuMorphism.
+=======
+# 📊 Plataforma de Métodos Quantitativos Aplicados (PMQA)
+
+A **PMQA** é um ecossistema integrado e modular desenvolvido para a automação de pipelines de dados públicos, análise econométrica regional e consolidação orçamentária. O sistema unifica ferramentas analíticas sob uma arquitetura Flask estável e uma interface NeuMorhism.
+>>>>>>> 653555124e8e920b99e2d4cd52f953081ffc95af
 
 ---
 
